@@ -23,6 +23,9 @@ All game logic lives in `game.js`, loaded by `index.html` as a classic script (n
 - **Collisions**: ship is only vulnerable when `ship.invincible <= 0` (3s after reset, shown by blinking in `Ship.draw`). Ship-vs-asteroid uses `ship.radius + a.radius * 0.82` as a forgiving hitbox.
 - Level progression: clearing all asteroids calls `nextLevel()`, which spawns `3 + level` large asteroids outside a safe radius around the center.
 
-- **Power-up (triple shot)**: `PowerUp` drops exactly once per level, at the position of the `powerUpAtKill`-th asteroid destroyed that level (random target planned in `spawnAsteroids()`, always reachable since each large asteroid yields 7 kills). Picking it up sets the global `tripleTimer` (5s); while > 0, `Ship.tryShoot()` fires 3 bullets in a fan. The timer is lost on death and survives `nextLevel()`.
+- **Power-ups (triple shot + shield)**: `PowerUp` has a `type` (`'triple' | 'shield'`). Each level drops exactly one of each, at the position of the `atKill`-th asteroid destroyed that level (two distinct random targets stored in `dropPlan`, planned in `spawnAsteroids()`, always reachable since each large asteroid yields 7 kills). Active items live in the `powerUps` array. All asteroid destruction goes through `destroyAsteroid()` (score, explosion, split, drop check), used by both bullets and the shield.
+  - Triple: pickup sets `tripleTimer` (5s); while > 0, `Ship.tryShoot()` fires 3 bullets in a fan.
+  - Shield: pickup sets `shieldTimer` (5s); the first asteroid hit while > 0 zeroes it, destroys that asteroid via `destroyAsteroid()` and gives `SHIELD_GRACE` (1s) of `ship.invincible`. Drawn in `Ship.draw()` as a circle that blinks in the last second.
+  - Both timers are lost on death and survive `nextLevel()`.
 
 The shooting-star asteroid was removed from the game (see git history); the README still mentions it in its description.

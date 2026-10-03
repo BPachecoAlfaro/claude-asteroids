@@ -23,4 +23,6 @@ All game logic lives in `game.js`, loaded by `index.html` as a classic script (n
 - **Collisions**: ship is only vulnerable when `ship.invincible <= 0` (3s after reset, shown by blinking in `Ship.draw`). Ship-vs-asteroid uses `ship.radius + a.radius * 0.82` as a forgiving hitbox.
 - Level progression: clearing all asteroids calls `nextLevel()`, which spawns `3 + level` large asteroids outside a safe radius around the center.
 
-Power-ups and the shooting-star asteroid were removed from the game (see git history); the README still mentions them in its description.
+- **Power-up (triple shot)**: `PowerUp` drops exactly once per level, at the position of the `powerUpAtKill`-th asteroid destroyed that level (random target planned in `spawnAsteroids()`, always reachable since each large asteroid yields 7 kills). Picking it up sets the global `tripleTimer` (5s); while > 0, `Ship.tryShoot()` fires 3 bullets in a fan. The timer is lost on death and survives `nextLevel()`.
+
+The shooting-star asteroid was removed from the game (see git history); the README still mentions it in its description.
